@@ -7,13 +7,14 @@ public class PullingJump : MonoBehaviour
     private Vector3 clickPosition;
 
     [SerializeField]
-    private float jumpPower = 10;
+    private float jumpPower = 20;
     private Rigidbody rb;
 
     // Start is called before the first frame update
     void Start()
     {
         rb = gameObject.GetComponent<Rigidbody>();
+        Physics.gravity = new Vector3(0,-50,0);
     }
 
     // Update is called once per frame
@@ -31,6 +32,11 @@ public class PullingJump : MonoBehaviour
             if(dist.sqrMagnitude == 0 ) { return; }
             //·•ª‚ğ•W€‰»‚µAjumpPower‚ğ‚©‚¯‡‚í‚¹‚½’l‚ğˆÚ“®—Ê‚É‚·‚é
             rb.velocity = dist.normalized * jumpPower;
+        }
+
+        if( Input.GetKeyDown(KeyCode.Space) )
+        {
+            Physics.gravity *= -1;
         }
     }
 }
