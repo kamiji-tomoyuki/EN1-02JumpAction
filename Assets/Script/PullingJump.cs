@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PullingJump : MonoBehaviour
 {
     private Vector3 clickPosition;
     private bool isCanJump;
+
+    public static float gravity;
 
     [SerializeField]
     private float jumpPower = 20;
@@ -15,12 +18,14 @@ public class PullingJump : MonoBehaviour
     void Start()
     {
         rb = gameObject.GetComponent<Rigidbody>();
-        Physics.gravity = new Vector3(0, -50, 0);
     }
 
     // Update is called once per frame
     void Update()
     {
+        gravity = Floating.gravity;
+        Physics.gravity = new Vector3(0, gravity, 0);
+
         if (Input.GetMouseButtonDown(0))
         {
             clickPosition = Input.mousePosition;
@@ -35,23 +40,6 @@ public class PullingJump : MonoBehaviour
             rb.velocity = dist.normalized * jumpPower;
         }
 
-        //重力操作
-        if (Input.GetKeyDown(KeyCode.S))
-        {
-            Physics.gravity = new Vector3(0, -50, 0);
-        }
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            Physics.gravity = new Vector3(0, 50, 0);
-        }
-        if (Input.GetKeyDown(KeyCode.A))
-        {
-            Physics.gravity = new Vector3(-50, 0, 0);
-        }
-        if (Input.GetKeyDown(KeyCode.D))
-        {
-            Physics.gravity = new Vector3(50, 0, 0);
-        }
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -61,7 +49,7 @@ public class PullingJump : MonoBehaviour
 
     private void OnCollisionStay(Collision collision)
     {
-        //Debug.Log("接触中");
+        Debug.Log("接触中");
         //衝突している点の情報が複数格納されている
         ContactPoint[] contacts = collision.contacts;
         //0番目の衝突情報から、衝突している点の法線を取得
@@ -70,24 +58,14 @@ public class PullingJump : MonoBehaviour
         //方向ベクトル 長さ1
         Vector3 jumpVector = new Vector3();
         //重力下
-        if (Physics.gravity.y == -50)
+        if (Physics.gravity.y == -30)
         {
             jumpVector = new Vector3(0, 1, 0);
         }
         //重力上
-        if (Physics.gravity.y == 50)
+        if (Physics.gravity.y == 30)
         {
             jumpVector = new Vector3(0, -1, 0);
-        }
-        //重力右
-        if (Physics.gravity.x == -50)
-        {
-            jumpVector = new Vector3(1, 0, 0);
-        }
-        //重力左
-        if (Physics.gravity.x == 50)
-        {
-            jumpVector = new Vector3(-1, 0, 0);
         }
 
         //方向と法線の内積
